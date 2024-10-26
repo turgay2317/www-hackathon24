@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Submission Form</title>
+    <style>
+         body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .loader {
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: 8px solid #ccc;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #loader-screen {
+            display: none;
+        }
+
+        #counter {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" id="form-screen" action="{{ url_for('api.run') }}">
+        <label for="text">Enter Text:</label>
+        <textarea id="text" name="text" style="width:60%; height:300px;" required>sinavKagitlariniOku
+T.C. Gazi Üniversitesi
+Tarih Bölümü 2023/2024 Vize Sınavı
+Öğr. Gör. Turgay CEYLAN
+Öğrenci: Berke
+
+Soru 1: Malazgirt savaşı hangi tarihte kimler arasında gerçekleşmiştir? (50p)
+Cevap: 1071 yılında roma-türk orduları arasında gerçekleşmiştir.
+
+Soru 2: Fatih Sultan Mehmet, İtalya seferini neden gerçekleştirememiştir? (50p) (2 madde yazın)
+Cevap: Fatih Sultan Mehmet'in ömrü yetmediği için sefer gerçekleştirememiştir.
+
+
+T.C. Gazi Üniversitesi
+Tarih Bölümü 2023/2024 Vize Sınavı
+Öğr. Gör. Turgay CEYLAN
+Öğrenci: Bertan
+
+Soru 1: Malazgirt savaşı hangi tarihte kimler arasında gerçekleşmiştir? (50p)
+Cevap: 1063 yılında selçuklu-bizans orduları arasında gerçekleşmiştir.
+
+Soru 2: Fatih Sultan Mehmet, İtalya seferini neden gerçekleştirememiştir? (50p) (2 madde yazın)
+Cevap: Fatih Sultan Mehmet'in böyle bir şeye ihtiyacı yoktu.
+
+
+T.C. Gazi Üniversitesi
+Tarih Bölümü 2023/2024 Vize Sınavı
+Öğr. Gör. Turgay CEYLAN
+Öğrenci: Paşa
+
+Soru 1: Malazgirt savaşı hangi tarihte kimler arasında gerçekleşmiştir? (50p)
+Cevap: Savaş Malazgirt meydanında iki taraf tarafından gerçekleştirildi. Savaş sonucunda
+Türkler'in anadoluya kapıları açıldı.
+
+Soru 2: Fatih Sultan Mehmet, İtalya seferini neden gerçekleştirememiştir? (50p) (2 madde yazın)
+Cevap: 	Fatih Sultan Mehmet aslında güney italya'ya çıkartma yapmıştır fakat ölümü sebebiyle
+devamı gelmemiştir.
+
+T.C. Gazi Üniversitesi
+Tarih Bölümü 2023/2024 Vize Sınavı
+Öğr. Gör. Turgay CEYLAN
+Öğrenci: Yağmur
+
+Soru 1: Malazgirt savaşı hangi tarihte kimler arasında gerçekleşmiştir? (50p)
+Cevap: 1071 yılında selçuklu-doğu roma imparatorluğu arasında gerçekleşmiştir.
+
+Soru 2: Fatih Sultan Mehmet, İtalya seferini neden gerçekleştirememiştir? (50p) (2 madde yazın)
+Cevap: Osmanlıların İtalya'ya doğru ilerlemesi, Avrupa'daki diğer devletleri alarma geçirmiştir.
+
+
+
+T.C. Gazi Üniversitesi
+Tarih Bölümü 2023/2024 Vize Sınavı
+Öğr. Gör. Turgay CEYLAN
+Öğrenci: Alp
+
+Soru 1: Malazgirt savaşı hangi tarihte kimler arasında gerçekleşmiştir? (50p)
+Cevap: 1071 yılında selçuklu-doğu roma imparatorluğu arasında gerçekleşmiştir.
+
+Soru 2: Fatih Sultan Mehmet, İtalya seferini neden gerçekleştirememiştir? (50p) (2 madde yazın)
+Cevap: Osmanlıların İtalya'ya doğru ilerlemesi, Avrupa'daki diğer devletleri alarma geçirmiştir.
+
+
+        </textarea>
+        <button type="submit" onclick="clickedButton()">Gönder</button>
+    </form>
+    <div id="loader-screen">
+        <div class="loader"></div>
+        <div class="message"> Yükleniyor...</div>
+        <div id="counter"></div>
+    </div>
+</body>
+<script>
+    const counterDisplay = document.getElementById('counter');
+    let counter = 0;
+
+    const updateCounter = () => {
+        counter++;
+        counterDisplay.innerText = counter + " sn.";
+    };
+
+    const clickedButton = () => {
+        document.getElementById('loader-screen').style.display = 'block';
+        document.getElementById('form-screen').style.display = 'none';
+
+        setInterval(updateCounter, 1000);
+    }
+</script>
+</html>

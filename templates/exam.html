@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <title>Sınav Soruları</title>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-family: 'Arial', sans-serif;
+        }
+        #question-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #4f46e5;
+            color: white;
+            border-radius: 25px;
+        }
+        h1 {
+            color: #374151;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #4b5563;
+            font-size: 1.5rem;
+        }
+        .list-group-item {
+            background-color: #f9fafb;
+            border: none;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .positive {
+            color: #10b981; /* Yeşil */
+        }
+        .negative {
+            color: #ef4444; /* Kırmızı */
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex flex-column align-items-center mt-5">
+        <h1>Sınav Soruları</h1>
+        <div id="question-container">
+            <h2 id="soru-basligi">{{ soru.soru }}</h2>
+            <p><strong>Puan:</strong> <span id="soru-puan">{{ soru.puan }}</span></p>
+            <h3>Cevaplar:</h3>
+            <ul class="list-group" id="cevaplar-listesi">
+                {% for cevap in soru.cevaplar %}
+                    <li class="list-group-item">
+                        <p><strong>Cevap:</strong> {{ cevap.cevap }} ({{ cevap.puan }} puan verildi)</p>
+                        <p><strong>{{ cevap.ogrenciler|length }} öğrenci bu cevabı verdi:</strong>
+                        {% for ogrenci in cevap.ogrenciler %}
+                            <span>{{ ogrenci.ad }}</span>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                        </p>
+                        {% if cevap.analizler %}
+    <p><strong>Pozitif:</strong>
+        <span class="positive">
+            {% for analiz in cevap.analizler %}
+                {{ analiz.pozitif }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    </p>
+    <p><strong>Negatif:</strong>
+        <span class="negative">
+            {% for analiz in cevap.analizler %}
+                {{ analiz.negatif }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    </p>
+{% else %}
+    <p><strong>Pozitif:</strong> <span class="positive">Yok</span></p>
+    <p><strong>Negatif:</strong> <span class="negative">Yok</span></p>
+{% endif %}
+
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+        <div class="mt-4">
+            {% if soru.id > 1 %}
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id - 1) }}" class="btn btn-custom me-2">Geri</a>
+            {% endif %}
+            {% if soru.id < sinav.sorular|length %}
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id + 1) }}" class="btn btn-custom">İleri</a>
+            {% else %}
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id) }}" class="btn btn-custom">Bitir</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
