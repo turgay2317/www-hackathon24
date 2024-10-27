@@ -16,6 +16,7 @@ class Sinav(db.Model):
 class Soru(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     soru = db.Column(db.String(500), nullable=False)
+    soru_no = db.Column(db.Integer, nullable=False)
     puan = db.Column(db.Integer, nullable=False)
     kisitlamalar = db.Column(db.String(500), nullable=True)
     sinav_id = db.Column(db.Integer, db.ForeignKey('sinav.sinavID'), nullable=False)
