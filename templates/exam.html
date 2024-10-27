@@ -88,13 +88,13 @@
             </ul>
         </div>
         <div class="mt-4">
-            {% if soru.id > 1 %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id - 1) }}" class="btn btn-custom me-2">Geri</a>
+            {% if soru.soru_no > 1 %}
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no - 1) }}" class="btn btn-custom me-2">Geri</a>
             {% endif %}
-            {% if soru.id < sinav.sorular|length %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id + 1) }}" class="btn btn-custom">İleri</a>
+            {% if soru.soru_no < sinav.sorular|length %}
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no + 1) }}" class="btn btn-custom">İleri</a>
             {% else %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_id=soru.id) }}" class="btn btn-custom">Bitir</a>
+                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no) }}" class="btn btn-custom">Bitir</a>
             {% endif %}
         </div>
     </div>
