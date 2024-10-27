@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import requests
+import base64
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from models import db, Ders, Sinav, Soru, Cevap, Ogrenci, Analiz
 import google.generativeai as genai
@@ -74,6 +75,64 @@ chat_session = model.start_chat(history=[])
 @api.route('/', methods=['GET'])
 def homepage():
     return render_template('index.html')
+
+VISION_API_KEY = "AIzaSyBzzeaZ0WYS8lQi4VzYXHhyKs_7F0HZG1U"    
+
+@api.route('/upload', methods=['GET', 'POST'])
+def upload():
+    detected_texts = []  # Birden fazla tanımlanan metni depolamak için liste oluştur
+
+    if request.method == 'POST':
+        # Kullanıcının yüklediği tüm görüntüleri al
+        images = request.files.getlist("images")
+        
+        if not images:
+            return "Lütfen en az bir görüntü yükleyin", 400
+
+        for image in images:
+            # Görüntüyü base64 formatına çevir
+            content = base64.b64encode(image.read()).decode("utf-8")
+
+            # Google Vision API endpoint'i
+            url = f"https://vision.googleapis.com/v1/images:annotate?key={VISION_API_KEY}"
+
+            # İstek verisi
+            data = {
+                "requests": [
+                    {
+                        "image": {
+                            "content": content
+                        },
+                        "features": [
+                            {
+                                "type": "TEXT_DETECTION"
+                            }
+                        ]
+                    }
+                ]
+            }
+
+            # API'ye POST isteği gönder ve yanıtı al
+            try:
+                response = requests.post(url, json=data)
+                response.raise_for_status()  # Yanıt 200 OK değilse hata fırlatır
+                result = response.json()
+
+                # Yanıtın "responses" ve "textAnnotations" anahtarını kontrol et
+                if "responses" in result and result['responses'] and 'textAnnotations' in result['responses'][0]:
+                    detected_text = result['responses'][0]['textAnnotations'][0].get('description', 'Metin bulunamadı.')
+                else:
+                    detected_text = "Yanıtta metin bulunamadı."
+                
+                detected_texts.append(detected_text)
+
+            except requests.exceptions.RequestException as e:
+                print(f"API isteğinde hata oluştu: {e}")
+                detected_texts.append("API isteğinde bir hata oluştu.")
+
+    # Tüm tanımlanan metinleri aynı sayfada göstermek için render template fonksiyonuna ekleyelim
+    return render_template("upload.html", detected_texts=detected_texts)
+
 
 @api.route('/run', methods=['POST'])
 def run():
