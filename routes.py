@@ -18,6 +18,40 @@ generation_config = {
     "response_mime_type": "application/json"
 }
 
+json_string = '''{
+    "ders": {
+        "ad": "string"  # Ders adı
+    },
+    "sinav": {
+        "tarih": None  # Sınav tarihi (timestamp)
+    },
+    "sorular": [
+        {
+            "soru": "string",  # Soru metni
+            "soru_no": 1,  # Soru numarası (int, otomatik artan)
+            "puan": 0.0,  # Soru puanı (float)
+            "kisitlamalar": [],  # Kısıtlamalar listesi
+            "cevaplar": [
+                {
+                    "cevap": "string",  # Cevap metni
+                    "puan": 0.0,  # Cevap puanı (float)
+                    "ogrenciler": [
+                        {
+                            "numara": "string",  # Öğrenci numarası
+                            "ad": "string",  # Öğrenci adı
+                            "soyad": "string"  # Öğrenci soyadı
+                        }
+                    ],
+                    "analiz": {
+                        "pozitif": [],  # Pozitif analiz listesi
+                        "negatif": []   # Negatif analiz listesi
+                    }
+                }
+            ]
+        }
+    ]
+} '''
+
 model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",
     generation_config=generation_config,
@@ -31,10 +65,8 @@ model = genai.GenerativeModel(
                       "Aynı cevabı veren öğrenciler olursa bunu 'ogrenciler' propertysinde belirt. "
                       "Ek bir cevapmış gibi algılama. Ayrıca bir kısıtlama belirtilmediyse soruda "
                       "sorulan her şeyin puan değeri birbirine eşittir. Eğer sorulan soruya alakasız bir cevap "
-                      "verildiyse puan verme.\n\n"
-                      "{ders: {ad (string)}, sinav: {tarih (timestamp)},sorular: [{soru (string), "
-                      "puan(double), kisitlamalar[], cevaplar: [\ncevap: (string),\npuan: (double),\n"
-                      "ogrenciler: [{numara, ad, soyad}]\nanaliz: {\npozitif: [],\nnegatif: [],\n}\n]}]}",
+                      f"verildiyse puan verme.\n {json_string}"
+                      "Bana vereceğin JSON'da kesinlikle parantezler doğru olsun. Herhangi bir hata olmasın güzelce kontrol et."
 )
 
 chat_session = model.start_chat(history=[])
@@ -53,20 +85,25 @@ def run():
         try:
             response = requests.post("http://127.0.0.1:5000/add_data", json=json.loads(json_data))
             if response.status_code == 201:
-                return redirect(url_for('api.sinav', sinav_id=response.json().get("sinavID"), soru_id=1))
+                return redirect(url_for('api.sinav', sinav_id=response.json().get("sinavID"), soru_no=1))
             else:
                 print("Bir hata oluştu:", response.status_code)
                 print(response.text)
         except json.JSONDecodeError as e:
+            print(json_data)
             return f"Hata: Geçersiz JSON formatı. {str(e)}", 400
         except Exception as e:
             return f"Hata: {str(e)}", 400
 
 
-@api.route('/sinav/<int:sinav_id>/soru/<int:soru_id>')
-def sinav(sinav_id, soru_id):
+@api.route('/sinav/<int:sinav_id>/soru/<int:soru_no>')
+def sinav(sinav_id, soru_no):
     sinav = Sinav.query.get_or_404(sinav_id)
-    soru = Soru.query.get_or_404(soru_id)
+    soru = Soru.query.filter_by(sinav_id=sinav_id, soru_no=soru_no).first()
+
+    if sinav is None or soru is None:
+        return render_template('error.html', message='Sınav ya da soru bulunamadı')
+
     return render_template('exam.html', sinav=sinav, soru=soru)
 
 @api.route('/add_data', methods=['POST'])
@@ -78,24 +115,14 @@ def add_data():
         ders = Ders(ad=ders_data['ad'])
         db.session.add(ders)
         db.session.commit()
-        sinav_data = json_data.get('sinav')
-        sinav_tarih = sinav_data['tarih']
-
-        if sinav_tarih is None:
-            sinav_tarih = datetime.now()  # Geçerli tarihi al
-        else:
-            sinav_tarih = datetime.fromisoformat(sinav_tarih)  # Geçerli tarih string ise burada dönüştür
-
-        print("a")
-        sinav = Sinav(tarih=sinav_tarih, ders_id=ders.id)
+        sinav = Sinav(tarih=datetime.now(), ders_id=ders.id)
         db.session.add(sinav)
         db.session.commit()
-        print("b")
 
         for soru_data in json_data.get('sorular', []):
-            print("c")
             soru = Soru(
                 soru=soru_data['soru'],
+                soru_no=soru_data['soru_no'],
                 puan=soru_data['puan'],
                 kisitlamalar=", ".join(soru_data['kisitlamalar']),
                 sinav_id=sinav.sinavID
@@ -104,7 +131,6 @@ def add_data():
             db.session.commit()
 
             for cevap_data in soru_data.get('cevaplar', []):
-                print("d")
                 cevap = Cevap(
                     cevap=cevap_data['cevap'],
                     puan=cevap_data['puan'],
@@ -114,7 +140,6 @@ def add_data():
                 db.session.commit()
 
                 for ogrenci_data in cevap_data.get('ogrenciler', []):
-                    print("e")
                     ogrenci = Ogrenci(
                         numara=ogrenci_data.get('numara'),
                         ad=ogrenci_data['ad'],
@@ -124,14 +149,12 @@ def add_data():
                     db.session.add(ogrenci)
 
                 analiz_data = cevap_data.get('analiz', {})
-                print("f")
 
                 analiz = Analiz(
                     pozitif=", ".join(analiz_data.get('pozitif', [])),
                     negatif=", ".join(analiz_data.get('negatif', [])),
                     cevap_id=cevap.id
                 )
-                print("g")
 
                 db.session.add(analiz)
 
