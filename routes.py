@@ -34,7 +34,7 @@ model = genai.GenerativeModel(
                       "verildiyse puan verme.\n\n"
                       "{ders: {ad (string)}, sinav: {tarih (timestamp)},sorular: [{soru (string), "
                       "puan(double), kisitlamalar[], cevaplar: [\ncevap: (string),\npuan: (double),\n"
-                      "ogrenciler: [{numara, ad, soyad}]\nanaliz: [\npozitif: [],\nnegatif: [],\n]\n]}]}",
+                      "ogrenciler: [{numara, ad, soyad}]\nanaliz: {\npozitif: [],\nnegatif: [],\n}\n]}]}",
 )
 
 chat_session = model.start_chat(history=[])
@@ -72,31 +72,28 @@ def sinav(sinav_id, soru_id):
 @api.route('/add_data', methods=['POST'])
 def add_data():
     try:
-        # JSON verisini almak
-        json_data = request.get_json(force=True)  # force=True, eğer Content-Type belirtilmemişse bile JSON verisini alır.
-
-        # Ders ekleme
+        json_data = request.get_json(force=True)
+        print(json_data)
         ders_data = json_data.get('ders')
         ders = Ders(ad=ders_data['ad'])
         db.session.add(ders)
         db.session.commit()
-        # Sınav ekleme
         sinav_data = json_data.get('sinav')
         sinav_tarih = sinav_data['tarih']
 
-        # Tarih alanı kontrolü
         if sinav_tarih is None:
             sinav_tarih = datetime.now()  # Geçerli tarihi al
         else:
             sinav_tarih = datetime.fromisoformat(sinav_tarih)  # Geçerli tarih string ise burada dönüştür
 
-        # Sınav nesnesini oluştur
+        print("a")
         sinav = Sinav(tarih=sinav_tarih, ders_id=ders.id)
         db.session.add(sinav)
         db.session.commit()
+        print("b")
 
-        # Soruları ekleme
         for soru_data in json_data.get('sorular', []):
+            print("c")
             soru = Soru(
                 soru=soru_data['soru'],
                 puan=soru_data['puan'],
@@ -106,8 +103,8 @@ def add_data():
             db.session.add(soru)
             db.session.commit()
 
-            # Cevapları ekleme
             for cevap_data in soru_data.get('cevaplar', []):
+                print("d")
                 cevap = Cevap(
                     cevap=cevap_data['cevap'],
                     puan=cevap_data['puan'],
@@ -116,8 +113,8 @@ def add_data():
                 db.session.add(cevap)
                 db.session.commit()
 
-                # Öğrencileri ekleme
                 for ogrenci_data in cevap_data.get('ogrenciler', []):
+                    print("e")
                     ogrenci = Ogrenci(
                         numara=ogrenci_data.get('numara'),
                         ad=ogrenci_data['ad'],
@@ -126,13 +123,16 @@ def add_data():
                     )
                     db.session.add(ogrenci)
 
-                # Analizleri ekleme
                 analiz_data = cevap_data.get('analiz', {})
+                print("f")
+
                 analiz = Analiz(
                     pozitif=", ".join(analiz_data.get('pozitif', [])),
                     negatif=", ".join(analiz_data.get('negatif', [])),
                     cevap_id=cevap.id
                 )
+                print("g")
+
                 db.session.add(analiz)
 
                 db.session.commit()
