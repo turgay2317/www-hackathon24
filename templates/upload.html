@@ -72,30 +72,67 @@
         .result p {
             color: #555;
         }
+
+        /* Loader */
+         .loader {
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: 8px solid #ccc;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #loader-screen {
+            display: none;
+        }
+
+        #counter {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="form-screen">
         <h1>Google Vision API ile Çoklu Metin Tanıma</h1>
 
-        <!-- Görüntü yükleme formu -->
-        <form method="post" action="{{ url_for('api.upload') }}" enctype="multipart/form-data">
+        <form method="post" action="{{ url_for('api.run') }}" enctype="multipart/form-data">
             <label for="images">Görüntü Yükle:</label>
             <input type="file" name="images" id="images" multiple required>
-            <button type="submit">Yükle ve Tanı</button>
+            <button type="submit" onclick="clickedButton()">Yükle ve Tanı</button>
         </form>
-
-        <!-- Tanımlanan metinleri göster -->
-        {% if detected_texts %}
-            <div class="result">
-                <h2>Tanımlanan Metinler:</h2>
-                <ul>
-                    {% for text in detected_texts %}
-                        <li>{{ text }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+    </div>
+    <div id="loader-screen">
+        <div class="loader"></div>
+        <div class="message"> Yükleniyor...</div>
+        <div id="counter"></div>
     </div>
 </body>
+<script>
+    const counterDisplay = document.getElementById('counter');
+    let counter = 0;
+
+    const updateCounter = () => {
+        counter++;
+        counterDisplay.innerText = counter + " sn.";
+    };
+
+    const clickedButton = () => {
+        document.getElementById('loader-screen').style.display = 'block';
+        document.getElementById('form-screen').style.display = 'none';
+
+        setInterval(updateCounter, 1000);
+    }
+</script>
 </html>

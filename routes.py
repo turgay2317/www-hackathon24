@@ -59,6 +59,7 @@ model = genai.GenerativeModel(
     system_instruction="Sen, klasik olarak yapılan bir sınavın analiz aracısın. "
                       "Sana şu komutları verdiğimde şu işlemleri gerçekleştirmeni istiyorum;\n\n"
                       "1 - sinavKagitlariniOku : Bu komutta, sana sınav kağıtlarının text verisini vereceğim. "
+                      "Bu text verisindeki Türkçe kelimelerde bazı yazım yanlışları olabilir Onları doğru kelimelerle değiştirip değerlendirmeni istiyorum."
                       "Eline geçen text verisini şu json formatında bana vermeni istiyorum. "
                       "Bu soruları cevaplara göre kısıtlamaları ve soru içeriğini göz önüne alarak; "
                       "sahip olduğun bilgilere göre puanlandır ve nasıl puanlandırdığını analiz kısmında "
@@ -74,18 +75,17 @@ chat_session = model.start_chat(history=[])
 
 @api.route('/', methods=['GET'])
 def homepage():
-    return render_template('index.html')
+    return render_template('upload.html')
 
-VISION_API_KEY = "AIzaSyBzzeaZ0WYS8lQi4VzYXHhyKs_7F0HZG1U"    
+VISION_API_KEY = "AIzaSyBzzeaZ0WYS8lQi4VzYXHhyKs_7F0HZG1U"
 
-@api.route('/upload', methods=['GET', 'POST'])
-def upload():
-    detected_texts = []  # Birden fazla tanımlanan metni depolamak için liste oluştur
+@api.route('/run', methods=['POST'])
+def run():
+    detected_texts = []
 
     if request.method == 'POST':
-        # Kullanıcının yüklediği tüm görüntüleri al
         images = request.files.getlist("images")
-        
+
         if not images:
             return "Lütfen en az bir görüntü yükleyin", 400
 
@@ -123,21 +123,15 @@ def upload():
                     detected_text = result['responses'][0]['textAnnotations'][0].get('description', 'Metin bulunamadı.')
                 else:
                     detected_text = "Yanıtta metin bulunamadı."
-                
+
                 detected_texts.append(detected_text)
 
             except requests.exceptions.RequestException as e:
                 print(f"API isteğinde hata oluştu: {e}")
                 detected_texts.append("API isteğinde bir hata oluştu.")
 
-    # Tüm tanımlanan metinleri aynı sayfada göstermek için render template fonksiyonuna ekleyelim
-    return render_template("upload.html", detected_texts=detected_texts)
+        text = '\n'.join(detected_texts)
 
-
-@api.route('/run', methods=['POST'])
-def run():
-    if request.method == 'POST':
-        text = request.form.get('text')
         json_data = chat_session.send_message(text).text
         if not json_data:
             return "Hata: JSON verisi boş.", 400
