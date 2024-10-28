@@ -42,3 +42,9 @@ class Analiz(db.Model):
     pozitif = db.Column(db.String(500), nullable=True)
     negatif = db.Column(db.String(500), nullable=True)
     cevap_id = db.Column(db.Integer, db.ForeignKey('cevap.id'), nullable=False)
+
+
+class Ogretmen(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)

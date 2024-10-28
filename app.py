@@ -9,6 +9,7 @@ db.init_app(app)
 
 # API rotalarını kaydedin
 app.register_blueprint(api)
+app.secret_key = 'HACKATHON24WWW'
 
 # Veritabanını başlatma
 with app.app_context():

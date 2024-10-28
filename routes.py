@@ -2,8 +2,8 @@ import json
 from datetime import datetime
 import requests
 import base64
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
-from models import db, Ders, Sinav, Soru, Cevap, Ogrenci, Analiz
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash
+from models import db, Ders, Sinav, Soru, Cevap, Ogrenci, Analiz, Ogretmen
 import google.generativeai as genai
 api = Blueprint('api', __name__)
 
@@ -75,7 +75,7 @@ chat_session = model.start_chat(history=[])
 
 @api.route('/', methods=['GET'])
 def homepage():
-    return render_template('upload.html')
+    return render_template('index.html')
 
 VISION_API_KEY = "AIzaSyBzzeaZ0WYS8lQi4VzYXHhyKs_7F0HZG1U"
 
@@ -148,6 +148,61 @@ def run():
         except Exception as e:
             return f"Hata: {str(e)}", 400
 
+
+@api.route('/login', methods=['GET', 'POST'])
+def login():
+    if 'teacher_id' in session:
+        return redirect(url_for('api.dashboard'))
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        teacher = Ogretmen.query.filter_by(username=username).first()
+
+        if teacher and teacher.password == password:
+            session['teacher_id'] = teacher.id  # Oturum aç
+            flash('Başarıyla giriş yaptınız!', 'success')
+            return redirect(url_for('api.dashboard'))
+        else:
+            flash('Geçersiz kullanıcı adı veya şifre', 'danger')
+
+    return render_template('login.html')
+
+@api.route('/logout')
+def logout():
+    # Oturumdaki teacher_id'yi temizle
+    session.pop('teacher_id', None)
+    flash('Başarıyla çıkış yaptınız.', 'success')
+    return redirect(url_for('api.login'))
+
+
+@api.route('/add_teacher', methods=['GET', 'POST'])
+def add_teacher():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        new_teacher = Ogretmen(username=username)
+        new_teacher.password = password
+
+        db.session.add(new_teacher)
+        db.session.commit()
+
+        flash('Öğretmen başarıyla eklendi!', 'success')
+        return redirect(url_for('api.add_teacher'))
+
+    return render_template('add_teacher.html')
+
+
+@api.route('/dashboard')
+def dashboard():
+    if 'teacher_id' not in session:
+        flash('Lütfen önce giriş yapın.', 'warning')
+        return redirect(url_for('api.login'))
+
+    # Giriş yapılmışsa dashboard sayfasını render et
+    return render_template('dashboard.html')
 
 @api.route('/sinav/<int:sinav_id>/soru/<int:soru_no>')
 def sinav(sinav_id, soru_no):
