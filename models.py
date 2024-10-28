@@ -12,6 +12,7 @@ class Sinav(db.Model):
     tarih = db.Column(db.DateTime, nullable=False)
     ders_id = db.Column(db.Integer, db.ForeignKey('ders.id'), nullable=False)
     sorular = db.relationship('Soru', backref='sinav', lazy=True)
+    ogretmen_id = db.Column(db.Integer, db.ForeignKey('ogretmen.id'), nullable=False)
 
 class Soru(db.Model):
     id = db.Column(db.Integer, primary_key=True)

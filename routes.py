@@ -81,6 +81,10 @@ VISION_API_KEY = "AIzaSyBzzeaZ0WYS8lQi4VzYXHhyKs_7F0HZG1U"
 
 @api.route('/run', methods=['POST'])
 def run():
+    teacher_id = session.get('teacher_id')
+    if teacher_id is None:
+        return render_template('error.html', message='Önce giriş yapmalısınız.')
+
     detected_texts = []
 
     if request.method == 'POST':
@@ -136,12 +140,22 @@ def run():
         if not json_data:
             return "Hata: JSON verisi boş.", 400
         try:
-            response = requests.post("http://127.0.0.1:5000/add_data", json=json.loads(json_data))
-            if response.status_code == 201:
-                return redirect(url_for('api.sinav', sinav_id=response.json().get("sinavID"), soru_no=1))
+            response = add_data(json.loads(json_data))
+
+            if isinstance(response, tuple):
+                status_code = response[1]
+                if status_code != 201:
+                    return jsonify({"error": "Hata oluştu"}), status_code
+
+                response_data = response[0].get_json()  # JSON yanıtını al
+                sinavID = response_data.get("sinavID")  # sinavID'yi al
+
+                return redirect(url_for('api.sinav', sinav_id=sinavID, soru_no=1))
+
             else:
                 print("Bir hata oluştu:", response.status_code)
                 print(response.text)
+                return "Veri eklenemedi, lütfen daha sonra tekrar deneyin.", 400
         except json.JSONDecodeError as e:
             print(json_data)
             return f"Hata: Geçersiz JSON formatı. {str(e)}", 400
@@ -202,7 +216,8 @@ def dashboard():
         return redirect(url_for('api.login'))
 
     # Giriş yapılmışsa dashboard sayfasını render et
-    return render_template('dashboard.html')
+    exams = Sinav.query.filter_by(ogretmen_id=session.get('teacher_id')).all()
+    return render_template('dashboard.html',exams=exams)
 
 @api.route('/sinav/<int:sinav_id>/soru/<int:soru_no>')
 def sinav(sinav_id, soru_no):
@@ -214,16 +229,17 @@ def sinav(sinav_id, soru_no):
 
     return render_template('exam.html', sinav=sinav, soru=soru)
 
+
 @api.route('/add_data', methods=['POST'])
-def add_data():
+def add_data(json_data=None):
     try:
-        json_data = request.get_json(force=True)
         print(json_data)
         ders_data = json_data.get('ders')
         ders = Ders(ad=ders_data['ad'])
         db.session.add(ders)
         db.session.commit()
-        sinav = Sinav(tarih=datetime.now(), ders_id=ders.id)
+
+        sinav = Sinav(tarih=datetime.now(), ders_id=ders.id, ogretmen_id=session.get('teacher_id'))
         db.session.add(sinav)
         db.session.commit()
 
