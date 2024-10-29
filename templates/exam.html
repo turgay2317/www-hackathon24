@@ -6,44 +6,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <title>Sınav Soruları</title>
     <style>
-        body {
-            background-color: #f3f4f6;
-            color: #1f2937;
-            font-family: 'Arial', sans-serif;
-        }
-        #question-container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-        .btn-custom {
-            background-color: #4f46e5;
-            color: white;
-            border-radius: 25px;
-        }
-        h1 {
-            color: #374151;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-        h2 {
-            color: #4b5563;
-            font-size: 1.5rem;
-        }
-        .list-group-item {
-            background-color: #f9fafb;
-            border: none;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-        .positive {
-            color: #10b981; /* Yeşil */
-        }
-        .negative {
-            color: #ef4444; /* Kırmızı */
-        }
+        body { background-color: #f3f4f6; color: #1f2937; font-family: 'Arial', sans-serif; }
+        #question-container { background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
+        .btn-custom { background-color: #4f46e5; color: white; border-radius: 25px; }
+        h1 { color: #374151; font-size: 2.5rem; margin-bottom: 30px; }
+        h2 { color: #4b5563; font-size: 1.5rem; }
+        .list-group-item { background-color: #f9fafb; border: none; padding: 20px; margin-bottom: 15px; border-radius: 8px; }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .score-buttons { margin-top: 10px; }
+        .btn-increase, .btn-decrease { margin: 0 5px; }
     </style>
 </head>
 <body>
@@ -55,36 +27,44 @@
             <h3>Cevaplar:</h3>
             <ul class="list-group" id="cevaplar-listesi">
                 {% for cevap in soru.cevaplar %}
-                    <li class="list-group-item">
-                        <p><strong>Cevap:</strong> {{ cevap.cevap }} ({{ cevap.puan }} puan verildi)</p>
+                    <li class="list-group-item" data-cevap-id="{{ cevap.id }}">
+                        <p><strong>Cevap:</strong> {{ cevap.cevap }}</p>
+                        <div class="score-buttons">
+                            <p> <span class="cevap-puan" style="font-weight: bold;">{{ cevap.puan }}</span> puan verildi</p>
+                            <button class="btn btn-success btn-increase">+</button>
+
+                            <button class="btn btn-danger btn-decrease">-</button>
+                        </div>
                         <p><strong>{{ cevap.ogrenciler|length }} öğrenci bu cevabı verdi:</strong>
                         {% for ogrenci in cevap.ogrenciler %}
                             <span>{{ ogrenci.ad }}</span>{% if not loop.last %}, {% endif %}
                         {% endfor %}
                         </p>
-                        {% if cevap.analizler %}
-    <p><strong>Pozitif:</strong>
-        <span class="positive">
-            {% for analiz in cevap.analizler %}
-                {{ analiz.pozitif }}{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        </span>
-    </p>
-    <p><strong>Negatif:</strong>
-        <span class="negative">
-            {% for analiz in cevap.analizler %}
-                {{ analiz.negatif }}{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        </span>
-    </p>
-{% else %}
-    <p><strong>Pozitif:</strong> <span class="positive">Yok</span></p>
-    <p><strong>Negatif:</strong> <span class="negative">Yok</span></p>
-{% endif %}
-
+                    <div id="analiz-container">
+    {% if cevap.analizler %}
+        <p><strong>Pozitif:</strong>
+            <span class="positive">
+                {% for analiz in cevap.analizler %}
+                    <input style="border-color:green;" type="text" class="form-control" value="{{ analiz.pozitif }}" data-id="{{ analiz.id }}" />
+                    {% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+        </p>
+        <p><strong>Negatif:</strong>
+            <span class="negative">
+                {% for analiz in cevap.analizler %}
+                    <input style="border-color:crimson;" type="text" class="form-control" value="{{ analiz.negatif }}" data-id="{{ analiz.id }}" />
+                    {% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+        </p>
+    {% else %}
+        <p><strong>Pozitif:</strong> <span class="positive">Yok</span></p>
+        <p><strong>Negatif:</strong> <span class="negative">Yok</span></p>
+    {% endif %}
+</div>
                     </li>
                 {% endfor %}
-
             </ul>
         </div>
         <div class="mt-4">
@@ -92,11 +72,81 @@
                 <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no - 1) }}" class="btn btn-custom me-2">Geri</a>
             {% endif %}
             {% if soru.soru_no < sinav.sorular|length %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no + 1) }}" class="btn btn-custom">İleri</a>
+                <button id="next-btn" class="btn btn-custom">İleri</button>
             {% else %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no) }}" class="btn btn-custom">Bitir</a>
+                <button id="next-btn" class="btn btn-custom">Bitir</button>
             {% endif %}
         </div>
     </div>
+
+    <script>
+        let sonrakiSoruNo = {{ sonrakiSoruID }};
+        let url = "http://127.0.0.1:5000/sinav/{{ sinav.sinavID }}/soru/" + sonrakiSoruNo;
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-increase').forEach(button => {
+                button.addEventListener('click', function () {
+                    const listItem = this.closest('.list-group-item');
+                    const scoreElement = listItem.querySelector('.cevap-puan');
+                    let score = parseInt(scoreElement.textContent);
+                    scoreElement.textContent = ++score;
+                });
+            });
+
+            document.querySelectorAll('.btn-decrease').forEach(button => {
+                button.addEventListener('click', function () {
+                    const listItem = this.closest('.list-group-item');
+                    const scoreElement = listItem.querySelector('.cevap-puan');
+                    let score = parseInt(scoreElement.textContent);
+                    scoreElement.textContent = --score;
+                });
+            });
+
+            document.getElementById('next-btn').addEventListener('click', function () {
+                if (confirm("Değişiklikleri kaydetmek istediğinizden emin misiniz?")) {
+                    const data = Array.from(document.querySelectorAll('.list-group-item')).map(item => ({
+                        cevap_id: item.getAttribute('data-cevap-id'),
+                        puan: parseInt(item.querySelector('.cevap-puan').textContent)
+                    }));
+
+                    // Analizleri topla
+                    const pozitifAnalizler = [];
+                    const negatifAnalizler = [];
+
+                            document.querySelectorAll('.positive input').forEach(input => {
+                            pozitifAnalizler.push({
+                                id: input.getAttribute('data-id'),
+                                pozitif: input.value
+                            });
+                        });
+
+                        document.querySelectorAll('.negative input').forEach(input => {
+                            negatifAnalizler.push({
+                                id: input.getAttribute('data-id'),
+                                negatif: input.value
+                            });
+                        });
+
+                    fetch("{{ url_for('api.kaydet_puanlar') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ puanlar: data, pozitif: pozitifAnalizler, negatif: negatifAnalizler })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert("Puanlar kaydedildi!");
+                            window.location.href = url;
+                        } else {
+                            alert("Kaydetme işlemi sırasında bir hata oluştu.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Bir hata oluştu.");
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

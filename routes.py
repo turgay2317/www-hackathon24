@@ -209,6 +209,46 @@ def add_teacher():
     return render_template('add_teacher.html')
 
 
+@api.route('/kaydet_puanlar', methods=['POST'])
+def kaydet_puanlar():
+    data = request.json
+    puanlar = data.get('puanlar', [])
+    pozitif_analizler = data.get('pozitif', [])
+    negatif_analizler = data.get('negatif', [])
+
+    try:
+        # Puanları güncelle
+        for puan in puanlar:
+            cevap_id = puan['cevap_id']
+            yeni_puan = puan['puan']
+            cevap_objesi = Cevap.query.get(cevap_id)
+            if cevap_objesi:
+                cevap_objesi.puan = yeni_puan
+                db.session.commit()
+
+        # Pozitif analizleri güncelle
+        for analiz in pozitif_analizler:
+            analiz_id = analiz['id']
+            yeni_pozitif = analiz['pozitif']
+            analiz_objesi = Analiz.query.get(analiz_id)
+            if analiz_objesi:
+                analiz_objesi.pozitif = yeni_pozitif
+                db.session.commit()
+
+        # Negatif analizleri güncelle
+        for analiz in negatif_analizler:
+            analiz_id = analiz['id']
+            yeni_negatif = analiz['negatif']
+            analiz_objesi = Analiz.query.get(analiz_id)
+            if analiz_objesi:
+                analiz_objesi.negatif = yeni_negatif
+                db.session.commit()
+
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        db.session.rollback()  # Hata olursa değişiklikleri geri al
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 @api.route('/dashboard')
 def dashboard():
     if 'teacher_id' not in session:
@@ -223,11 +263,14 @@ def dashboard():
 def sinav(sinav_id, soru_no):
     sinav = Sinav.query.get_or_404(sinav_id)
     soru = Soru.query.filter_by(sinav_id=sinav_id, soru_no=soru_no).first()
+    sonrakiSoruVarMi = Soru.query.filter_by(sinav_id=sinav_id, soru_no=soru_no + 1).first()
+    sonrakiSoruID = 1 if sonrakiSoruVarMi is not None else 0
+    sonrakiSoruID += soru.soru_no
 
     if sinav is None or soru is None:
         return render_template('error.html', message='Sınav ya da soru bulunamadı')
 
-    return render_template('exam.html', sinav=sinav, soru=soru)
+    return render_template('exam.html', sinav=sinav, soru=soru, sonrakiSoruID=sonrakiSoruID)
 
 
 @api.route('/add_data', methods=['POST'])
