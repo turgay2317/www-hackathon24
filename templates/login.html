@@ -6,6 +6,34 @@
     <title>Öğretmen Girişi - Write Wise</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
     <link rel="stylesheet" href="static/css/login.css">
+    <style>
+        .alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+            margin-top:20px;
+}
+
+/* Kategoriye göre renkler */
+.alert-success {
+    background-color: #4CAF50; /* Yeşil */
+}
+
+.alert-info {
+    background-color: #2196F3; /* Mavi */
+}
+
+.alert-warning {
+    background-color: #FFC107; /* Sarı */
+    color: black;
+}
+
+.alert-danger {
+    background-color: #F44336; /* Kırmızı */
+}
+    </style>
 </head>
 <body class="login">
 
@@ -26,12 +54,11 @@
             <button type="submit" class="btn">Giriş</button>
         </form>
         {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-        {% endwith %}
+        {% if messages %}
+            {% set last_message = messages[-1] %}
+            <div class="alert alert-{{ last_message[0] }}">{{ last_message[1] }}</div>
+        {% endif %}
+    {% endwith %}
     </div>
 
 </body>
