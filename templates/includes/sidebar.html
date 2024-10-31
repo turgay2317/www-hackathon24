@@ -1,0 +1,21 @@
+<div class="side-bar">
+   <div id="close-btn">
+      <i class="fas fa-times"></i>
+   </div>
+
+   <div class="profile">
+      <img src="static/images/pic-1.jpg" class="image" alt="Profile Picture">
+      <h3 class="name">Turgay Ceylan</h3>
+      <p class="role">Öğretmen</p>
+      <a href="profile.html" class="btn">Profili Görüntüle</a>
+   </div>
+
+   <nav class="navbar">
+      <a href="{{ url_for('api.dashboard') }}"><i class="fas fa-home"></i><span>Ana Sayfa</span></a>
+      <a href="{{ url_for('api.about') }}"><i class="fas fa-question"></i><span>Hakkında</span></a>
+      <a href="documents.html"><i class="fas fa-book"></i><span>Belgeler</span></a>
+      <a href="students.html"><i class="fas fa-user-graduate"></i><span>Öğrenciler</span></a>
+      <a href="{{ url_for('api.contact') }}"><i class="fas fa-headset"></i><span>İletişim</span></a>
+       <a href="{{ url_for('api.logout') }}"><i class="fas fa-headset"></i><span>Çıkış Yap</span></a>
+   </nav>
+</div>

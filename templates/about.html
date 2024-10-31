@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hata</title>
+    <title>About - Write Wise</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="stylesheet" href="static/css/style.css"> <!-- Projenin style.css dosyasını bağlıyoruz -->
+    <link rel="stylesheet" href="static/css/style.css">
     <style>
-        /* Body ayarları - Sayfayı ortalar */
+
         body {
             display: flex;
             justify-content: center;
@@ -19,67 +19,57 @@
             background-color: var(--light-bg);
         }
 
-        /* Error Page Custom Styles */
-        .error-container {
-            text-align: center;
-            color: var(--black);
-            background-color: var(--white);
+        .about-container {
+            max-width: 800px;
             padding: 2rem;
+            background-color: var(--white);
+            color: var(--black);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            text-align: center;
         }
 
-        .error-icon {
-            font-size: 4rem;
-            color: var(--red);
-            margin-bottom: 1rem;
-        }
-
-        .error-message {
+        .about-container h1 {
             font-size: 2.5rem;
-            font-weight: bold;
             color: var(--main-color);
             margin-bottom: 1rem;
         }
 
-        .error-description {
+        .about-container p {
             font-size: 1.6rem;
             color: var(--light-color);
+            line-height: 1.6;
             margin-bottom: 2rem;
         }
 
-        .error-actions a {
+        .about-container .team-link {
             display: inline-block;
             padding: 1rem 2rem;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: var(--white);
             background-color: var(--main-color);
             text-decoration: none;
             border-radius: .5rem;
             transition: background-color 0.3s;
-            margin: 0 0.5rem;
         }
 
-        .error-actions a:hover {
+        .about-container .team-link:hover {
             background-color: var(--black);
         }
     </style>
 </head>
 <body>
 
-<div class="error-container">
-    <div class="error-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-    </div>
-    <div class="error-message">Bir Hata Oluştu</div>
-    <div class="error-description">
-        {{ message }}
-    </div>
-    <div class="error-actions">
-        <a href="{{ url_for('api.homepage') }}">Ana Sayfa</a>
-        <a href="javascript:history.back()">Geri Dön</a>
-    </div>
+<div class="about-container">
+    <h1>Write Wise Hakkında</h1>
+    <p>Write Wise, eğitimcilerin öğrenci el yazılarını dijital olarak okuyabilmesine olanak tanıyan yenilikçi bir platformdur.
+       Platform, yapay zeka ve optik karakter tanıma (OCR) teknolojilerini kullanarak kağıt üzerindeki yazılı metinleri tarar ve analiz eder.
+       Böylece eğitimciler için sınav değerlendirme süreçleri daha hızlı ve verimli hale gelir.</p>
+
+    <p>Amacımız, eğitimde dijitalleşmeyi ve otomasyonu destekleyerek öğretmenlerin iş yükünü azaltmak ve öğrenci performansının
+       daha doğru ve hızlı değerlendirilmesini sağlamaktır.</p>
+
+    <a href="{{ url_for('api.homepage') }}" class="team-link">Anasayfa</a>
 </div>
 
 </body>

@@ -162,6 +162,13 @@ def run():
         except Exception as e:
             return f"Hata: {str(e)}", 400
 
+@api.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+@api.route('/contact', methods=['GET'])
+def contact():
+    return render_template('contact.html')
 
 @api.route('/login', methods=['GET', 'POST'])
 def login():
@@ -255,9 +262,25 @@ def dashboard():
         flash('Lütfen önce giriş yapın.', 'warning')
         return redirect(url_for('api.login'))
 
+    return render_template('dashboard.html')
+
+@api.route('/upload', methods=['GET'])
+def upload():
+    if 'teacher_id' not in session:
+        flash('Lütfen önce giriş yapın.', 'warning')
+        return redirect(url_for('api.login'))
+
+    return render_template('upload.html');
+
+@api.route('/recent')
+def recent():
+    if 'teacher_id' not in session:
+        flash('Lütfen önce giriş yapın.', 'warning')
+        return redirect(url_for('api.login'))
+
     # Giriş yapılmışsa dashboard sayfasını render et
     exams = Sinav.query.filter_by(ogretmen_id=session.get('teacher_id')).all()
-    return render_template('dashboard.html',exams=exams)
+    return render_template('recent.html',exams=exams)
 
 @api.route('/sinav/<int:sinav_id>/soru/<int:soru_no>')
 def sinav(sinav_id, soru_no):

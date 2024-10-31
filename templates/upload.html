@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosya Yükle - Write Wise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        /* Genel Ayarlar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sol Hizalama Ayarları */
+        body.upload-page {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding-left: 36vw;
+            background-color: var(--light-bg);
+            font-family: Arial, sans-serif;
+            color: var(--black);
+        }
+
+
+        .upload-container {
+            text-align: center;
+            background-color: var(--white);
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .upload-container h1 {
+            font-size: 2.5rem;
+            color: var(--main-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-container p {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            color: var(--black);
+        }
+
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .file-input-wrapper label {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            font-size: 1.6rem;
+            color: var(--white);
+            background-color: var(--main-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            font-size: 120px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.6rem;
+            color: var(--white);
+            background-color: var(--main-color);
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--black);
+        }
+
+        .progress-container {
+            margin-top: 2.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: var(--light-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            height: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background-color: var(--main-color);
+            transition: width 0.4s;
+        }
+
+
+        @media (max-width: 500px) {
+            body.upload-page {
+                padding-left: 5vw;
+            }
+
+            .upload-container {
+                padding: 2.5rem;
+            }
+
+            .upload-container h1 {
+                font-size: 2.2rem;
+            }
+
+            .upload-container p {
+                font-size: 1.4rem;
+            }
+
+            .file-input-wrapper label,
+            .upload-btn {
+                font-size: 1.4rem;
+                padding: 1rem 2rem;
+            }
+        }
+
+        /* Loader */
+         .loader {
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: 8px solid #ccc;
+            border-radius: 50%;
+            border-top: 8px solid #8f44ad;
+            animation: spin 1s linear infinite;
+             margin-left:auto;
+             margin-right: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #loader-screen {
+            display: none;
+        }
+
+        #counter {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+{% include 'includes/navbar.html' %}
+{% include 'includes/sidebar.html' %}
+
+<div class="upload-container" style="margin-left:auto; margin-right:auto; margin-top:100px;">
+    <h1>Görüntü Dosyası Yükle</h1>
+    <p>Yüklemek istediğiniz dosyayı seçin ve "Yükle" butonuna tıklayın.</p>
+
+    <form action="{{ url_for('api.run') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+        <div class="file-input-wrapper">
+            <label for="file">Dosya Seç</label>
+            <input type="file" name="images" id="images" accept="image/*" multiple required>
+        </div>
+        <button type="submit" class="upload-btn" onclick="clickedButton()">Yükle</button>
+    </form>
+
+    <div id="loader-screen" style="display: none;">
+        <div class="loader"></div>
+        <div class="message"> Yükleniyor...</div>
+        <div id="counter"></div>
+    </div>
+</div>
+
+<script>
+    const counterDisplay = document.getElementById('counter');
+    let counter = 0;
+
+    const updateCounter = () => {
+        counter++;
+        counterDisplay.innerText = counter + " sn.";
+    };
+
+    const clickedButton = () => {
+        document.getElementById('loader-screen').style.display = 'block';
+        document.getElementById('uploadForm').style.display = 'none';
+
+        setInterval(updateCounter, 1000);
+    }
+</script>
+
+</body>
+</html>

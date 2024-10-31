@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim - Write Wise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css"> <!-- Projenin style.css dosyasını bağlıyoruz -->
+    <style>
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .contact-container {
+            max-width: 600px;
+            width: 100%;
+            padding: 2rem;
+            background-color: var(--white);
+            color: var(--black);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .contact-container h1 {
+            font-size: 2.5rem;
+            color: var(--main-color);
+            margin-bottom: 1rem;
+        }
+
+        .contact-container p {
+            font-size: 1.6rem;
+            color: var(--light-color);
+            margin-bottom: 2rem;
+        }
+
+        .contact-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-container input,
+        .contact-container textarea {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.4rem;
+            color: var(--black);
+            background-color: var(--light-bg);
+            border: var(--border);
+            border-radius: .5rem;
+            outline: none;
+            resize: none;
+        }
+
+        .contact-container textarea {
+            height: 150px;
+        }
+
+        .contact-container button {
+            padding: 1rem 2rem;
+            font-size: 1.4rem;
+            color: var(--white);
+            background-color: var(--main-color);
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .contact-container button:hover {
+            background-color: var(--black);
+        }
+    </style>
+</head>
+<body>
+
+<div class="contact-container">
+    <h1>Bizimle İletişime Geçin</h1>
+    <p>Herhangi bir sorunuz veya öneriniz varsa lütfen bizimle iletişime geçin. Size yardımcı olmaktan memnuniyet duyarız.</p>
+
+    <form action="#" method="POST">
+        <input type="text" name="name" placeholder="Adınız" required>
+        <input type="email" name="email" placeholder="E-posta Adresiniz" required>
+        <textarea name="message" placeholder="Mesajınız" required></textarea>
+        <button type="submit">Gönder</button>
+    </form>
+</div>
+
+</body>
+</html>
