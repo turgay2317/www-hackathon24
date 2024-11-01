@@ -69,6 +69,7 @@ model = genai.GenerativeModel(
                       "sorulan her şeyin puan değeri birbirine eşittir. Eğer sorulan soruya alakasız bir cevap "
                       f"verildiyse puan verme.\n {json_string}"
                       "Bana vereceğin JSON'da kesinlikle parantezler doğru olsun. Herhangi bir hata olmasın güzelce kontrol et."
+                       "Bu sınav kağıdında (D) (Y) gibi boşluk doldurma sorularu bulunabilir. Bu D doğru anlamına gelmektedir. Y ise yanlış anlamına, değerlendirme yaparken yazılan bilgiyle doğru-yanlış kısmını göz önünde bulundur."
 )
 
 chat_session = model.start_chat(history=[])
