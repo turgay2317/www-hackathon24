@@ -4,65 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <title>Sınav Soruları</title>
+    <title>Sınav Soruları - Write Wise</title>
     <style>
-        body { background-color: #f3f4f6; color: #1f2937; font-family: 'Arial', sans-serif; }
-        #question-container { background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
-        .btn-custom { background-color: #4f46e5; color: white; border-radius: 25px; }
-        h1 { color: #374151; font-size: 2.5rem; margin-bottom: 30px; }
-        h2 { color: #4b5563; font-size: 1.5rem; }
-        .list-group-item { background-color: #f9fafb; border: none; padding: 20px; margin-bottom: 15px; border-radius: 8px; }
-        .positive { color: #10b981; }
-        .negative { color: #ef4444; }
-        .score-buttons { margin-top: 10px; }
-        .btn-increase, .btn-decrease { margin: 0 5px; }
+        
+        :root {
+            --main-color: #8e44ad;
+            --secondary-color: #4f46e5;
+            --background-color: #f3f4f6;
+            --text-color: #2c3e50;
+            --white: #ffffff;
+            --positive-color: #10b981;
+            --negative-color: #ef4444;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --light-gray: #f9fafb;
+        }
+        
+        /* Genel Stil Ayarları */
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #question-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+        
+        .btn-custom {
+            background-color: var(--main-color);
+            color: var(--white);
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        h1 {
+            color: var(--main-color);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .list-group-item {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+        
+        .positive { color: var(--positive-color); font-weight: bold; }
+        .negative { color: var(--negative-color); font-weight: bold; }
+        
+        .score-buttons {
+            margin-top: 10px;
+        }
+        
+        .score-buttons p {
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        
+       
+        .btn-increase, .btn-decrease {
+            background-color: var(--main-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-increase:hover, .btn-decrease:hover {
+            background-color: var(--secondary-color);
+        }
     </style>
 </head>
 <body>
+
+    <!-- Navbar -->
+    {% include 'includes/navbar.html' %}
+
     <div class="container d-flex flex-column align-items-center mt-5">
         <h1>Sınav Soruları</h1>
         <div id="question-container">
             <h2 id="soru-basligi">{{ soru.soru }}</h2>
-            <p><strong>Puan:</strong> <span id="soru-puan">{{ soru.puan }}</span></p>
+            <p><strong>Puan:</strong> <span id="soru-puan" style="color: var(--main-color);">{{ soru.puan }}</span></p>
             <h3>Cevaplar:</h3>
             <ul class="list-group" id="cevaplar-listesi">
                 {% for cevap in soru.cevaplar %}
                     <li class="list-group-item" data-cevap-id="{{ cevap.id }}">
                         <p><strong>Cevap:</strong> {{ cevap.cevap }}</p>
                         <div class="score-buttons">
-                            <p> <span class="cevap-puan" style="font-weight: bold;">{{ cevap.puan }}</span> puan verildi</p>
-                            <button class="btn btn-success btn-increase">+</button>
-
-                            <button class="btn btn-danger btn-decrease">-</button>
+                            <p><span class="cevap-puan">{{ cevap.puan }}</span> puan verildi</p>
+                            <button class="btn-increase">+</button>
+                            <button class="btn-decrease">-</button>
                         </div>
                         <p><strong>{{ cevap.ogrenciler|length }} öğrenci bu cevabı verdi:</strong>
                         {% for ogrenci in cevap.ogrenciler %}
                             <span>{{ ogrenci.ad }}</span>{% if not loop.last %}, {% endif %}
                         {% endfor %}
                         </p>
-                    <div id="analiz-container">
-    {% if cevap.analizler %}
-        <p><strong>Pozitif:</strong>
-            <span class="positive">
-                {% for analiz in cevap.analizler %}
-                    <input style="border-color:green;" type="text" class="form-control" value="{{ analiz.pozitif }}" data-id="{{ analiz.id }}" />
-                    {% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </span>
-        </p>
-        <p><strong>Negatif:</strong>
-            <span class="negative">
-                {% for analiz in cevap.analizler %}
-                    <input style="border-color:crimson;" type="text" class="form-control" value="{{ analiz.negatif }}" data-id="{{ analiz.id }}" />
-                    {% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </span>
-        </p>
-    {% else %}
-        <p><strong>Pozitif:</strong> <span class="positive">Yok</span></p>
-        <p><strong>Negatif:</strong> <span class="negative">Yok</span></p>
-    {% endif %}
-</div>
+                        <div id="analiz-container">
+                            {% if cevap.analizler %}
+                                <p><strong>Pozitif:</strong>
+                                    <span class="positive">
+                                        {% for analiz in cevap.analizler %}
+                                            <input style="border-color: var(--positive-color);" type="text" class="form-control" value="{{ analiz.pozitif }}" data-id="{{ analiz.id }}" />
+                                            {% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </p>
+                                <p><strong>Negatif:</strong>
+                                    <span class="negative">
+                                        {% for analiz in cevap.analizler %}
+                                            <input style="border-color: var(--negative-color);" type="text" class="form-control" value="{{ analiz.negatif }}" data-id="{{ analiz.id }}" />
+                                            {% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </p>
+                            {% else %}
+                                <p><strong>Pozitif:</strong> <span class="positive">Yok</span></p>
+                                <p><strong>Negatif:</strong> <span class="negative">Yok</span></p>
+                            {% endif %}
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
@@ -79,9 +162,11 @@
         </div>
     </div>
 
+
+
     <script>
         let sonrakiSoruNo = {{ sonrakiSoruID }};
-        let url = "http://127.0.0.1:5000/sinav/{{ sinav.sinavID }}/soru/" + sonrakiSoruNo;
+        let url = "{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=sonrakiSoruNo) }}";
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.btn-increase').forEach(button => {
                 button.addEventListener('click', function () {
@@ -108,23 +193,20 @@
                         puan: parseInt(item.querySelector('.cevap-puan').textContent)
                     }));
 
-                    // Analizleri topla
                     const pozitifAnalizler = [];
                     const negatifAnalizler = [];
-
-                            document.querySelectorAll('.positive input').forEach(input => {
-                            pozitifAnalizler.push({
-                                id: input.getAttribute('data-id'),
-                                pozitif: input.value
-                            });
+                    document.querySelectorAll('.positive input').forEach(input => {
+                        pozitifAnalizler.push({
+                            id: input.getAttribute('data-id'),
+                            pozitif: input.value
                         });
-
-                        document.querySelectorAll('.negative input').forEach(input => {
-                            negatifAnalizler.push({
-                                id: input.getAttribute('data-id'),
-                                negatif: input.value
-                            });
+                    });
+                    document.querySelectorAll('.negative input').forEach(input => {
+                        negatifAnalizler.push({
+                            id: input.getAttribute('data-id'),
+                            negatif: input.value
                         });
+                    });
 
                     fetch("{{ url_for('api.kaydet_puanlar') }}", {
                         method: 'POST',
