@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,41 +6,167 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Dashboard - Write Wise</title>
 
+   <!-- Font Awesome -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-   <link rel="stylesheet" href="static/css/style.css">
 
+   <style>
+       /* Renk Teması */
+       :root {
+           --main-color: #8e44ad;
+           --red: #e74c3c;
+           --orange: #f39c12;
+           --light-color: #888;
+           --light-bg: #eee;
+           --black: #2c3e50;
+           --white: #fff;
+           --border: .1rem solid rgba(0,0,0,.2);
+       }
+
+       /* Genel Stil Ayarları */
+       * {
+           font-family: 'Nunito', sans-serif;
+           margin: 0; padding: 0;
+           box-sizing: border-box;
+           text-decoration: none;
+       }
+
+       body {
+           background-color: var(--light-bg);
+           padding: 2rem;
+           min-height: 100vh;
+           display: flex;
+           flex-direction: column;
+       }
+
+       .container {
+           max-width: 1200px;
+           margin: auto;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: center;
+           flex: 1;
+       }
+
+       .heading {
+           font-size: 2.5rem;
+           color: var(--main-color);
+           margin-bottom: 2.5rem;
+           text-align: center;
+           text-transform: capitalize;
+       }
+
+       /* Tablo Konteyneri ve Kaydırma */
+       .table-container {
+           background-color: var(--white);
+           border-radius: .5rem;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           overflow-y: auto;
+           max-height: 60vh; /* Taşmayı önlemek için sınır */
+           width: 100%;
+       }
+
+       .table {
+           width: 100%;
+           border-collapse: collapse;
+       }
+
+       .table thead tr {
+           background-color: var(--main-color);
+           color: var(--white);
+       }
+
+       .table th, .table td {
+           padding: 1rem;
+           text-align: left;
+           border-bottom: var(--border);
+       }
+
+       .table tbody tr:nth-child(even) {
+           background-color: var(--light-bg);
+       }
+
+       .table tbody tr:hover {
+           background-color: var(--main-color);
+           color: var(--white);
+           transition: background-color 0.3s ease;
+       }
+
+       .inline-btn {
+           display: inline-block;
+           padding: 0.5rem 1rem;
+           color: var(--white);
+           background-color: var(--main-color);
+           border-radius: .25rem;
+           transition: background-color 0.3s ease;
+       }
+
+       .inline-btn:hover {
+           background-color: var(--black);
+       }
+
+       .footer {
+           background-color: var(--main-color);
+           color: var(--white);
+           text-align: center;
+           padding: 1.5rem;
+           margin-top: 2rem;
+           border-top: var(--border);
+           position: fixed;
+           bottom: 0;
+           left: 0;
+           width: 100%;
+       }
+   </style>
 </head>
 
 <body>
 
+<!-- Navbar -->
 {% include 'includes/navbar.html' %}
+
+<!-- Sidebar -->
 {% include 'includes/sidebar.html' %}
 
 <div class="container">
-    <table class="table table-bordered">
+    <!-- Heading for the Dashboard -->
+    <section class="heading">
+        <h1>Sınav Analizleri</h1>
+    </section>
+
+    <!-- Table for Exam List -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
                 <tr>
                     <th>Sınav No</th>
                     <th>Ders Adı</th>
                     <th>Tarih</th>
                     <th>İşlemler</th>
                 </tr>
-                <tbody>
-                    {% for sinav in exams %}
-                        <tr>
-                            <td>{{ sinav.sinavID }}</td>
-                            <td>{{ sinav.ders.ad }}</td>
-                            <td>{{ sinav.tarih.strftime('%Y-%m-%d') }}</td>
-                            <td>
-                                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=1) }}">Analiz Detayı</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                </tbody>
-            </table>
+            </thead>
+            <tbody>
+                {% for sinav in exams %}
+                    <tr>
+                        <td>{{ sinav.sinavID }}</td>
+                        <td>{{ sinav.ders.ad }}</td>
+                        <td>{{ sinav.tarih.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=1) }}" class="inline-btn">
+                                <i class="fas fa-chart-line"></i> Analiz Detayı
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
-
-</div>
+<!-- Footer -->
+<footer class="footer">
+    <p>&copy; 2024 Write Wise. Tüm Hakları Saklıdır.</p>
+</footer>
 
 </body>
 </html>
