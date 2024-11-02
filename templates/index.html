@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Çoklu Görüntü Yükle ve Metin Tanıma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uygulama Anasayfası - Write Wise</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #ff0000, #ffffff);
+            background: linear-gradient(to right, #8e44ad, #ffffff);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,7 +21,7 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 800px;
             width: 90%;
         }
 
@@ -30,55 +31,74 @@
             margin-bottom: 20px;
         }
 
-        label {
-            font-weight: bold;
+        .logo-container {
+            display: flex;
+            justify-content: flex-start; 
+            margin-bottom: 20px;
+            padding-right: 15px; 
+        }
+
+        .logo-item {
+            max-width: 270px; 
+            height: auto;
+            margin-right: 1px; 
+        }
+
+        .project-info {
+            margin-bottom: 20px;
+            text-align: left;
             color: #555;
-            margin-bottom: 10px;
-            display: block;
         }
 
-        input[type="file"] {
-            margin: 10px 0 20px;
-            padding: 8px;
-            width: 100%;
+        .project-info p {
+            font-size: 18px;
+            margin: 10px 0;
         }
 
-        button {
-            background-color: #4CAF50;
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .login-btn {
+            background-color: #8e44ad;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            text-decoration: none;
         }
 
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-            text-align: left;
-        }
-
-        .result h2 {
-            color: #333;
-        }
-
-        .result p {
-            color: #555;
+        .login-btn:hover {
+            background-color: #6d3799;
         }
     </style>
 </head>
 <body>
 
-    <div>
-        <a href="{{ url_for('api.login') }}">Öğretmen Girişi</a>
-    </div>
-</body>
+<div class="container">
+    <h1>Write Wise - Anasayfa</h1>
 
+    <!-- Logolar -->
+    <div class="logo-container">
+        <img src="static/images/slider1.png" alt="Sınav Analizi Logosu" class="logo-item">
+        <img src="static/images/slider2.png" alt="Metin Tanıma Logosu" class="logo-item">
+        <img src="static/images/slider3.png" alt="Detaylı Raporlama Logosu" class="logo-item">
+    </div>
+
+    <!-- Proje Bilgileri -->
+    <div class="project-info">
+        <p><strong>Write Wise ile Sınav Analizi:</strong> Sınav kağıtlarının analizini hızlıca yapın ve öğrenciyi değerlendirin.</p>
+        <p><strong>Metin Tanıma:</strong> Görsellerden el yazısı metinleri algılayarak dijital ortamda puanlayın.</p>
+        <p><strong>Detaylı Raporlama:</strong> Öğrencilerin gelişim süreçlerini analiz edin ve takip edin.</p>
+    </div>
+
+    <!-- Giriş Butonu -->
+    <div class="btn-container">
+        <a href="{{ url_for('api.login') }}" class="login-btn">Öğretmen Girişi</a>
+    </div>
+</div>
+
+</body>
 </html>
