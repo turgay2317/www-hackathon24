@@ -1443,3 +1443,72 @@ section{
    margin-left: 70px; /* Logoyu sağa kaydırmak için */
    margin-bottom: 49px;
 }
+
+/* Button Container Section */
+.button-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 4rem;
+   height: 30vh;
+}
+
+.button-with-logo {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+
+.logo-sinav-analizlerim {
+   margin-left: 10px;
+   margin-bottom: 15px;
+}
+
+.btn-sinav-analizlerim {
+   margin-top: -28px;
+   padding: 3rem 4rem;
+   font-size: 2.4rem;
+   color: var(--white);
+   background-color: var(--main-color);
+   border: none;
+   border-radius: .5rem;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+   width: 300px;
+   text-align: center;
+   white-space: nowrap;
+}
+
+/* Logo Styling */
+.button-logo {
+   width: 400px;
+   height: auto;
+   margin-bottom: 15px;
+   margin-right: 3rem;
+   object-fit: contain;
+}
+
+/* Equal Button */
+.equal-btn {
+   padding: 2rem 4rem;
+   font-size: 2.4rem;
+   color: var(--white);
+   background-color: var(--main-color);
+   border: none;
+   border-radius: .5rem;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+   width: 300px;
+   text-align: center;
+   white-space: nowrap;
+}
+
+.equal-btn:hover {
+   background-color: var(--black);
+}
+
+.logo-sinav-analizlerim {
+   margin-left: 70px;
+   margin-bottom: 49px;
+}
