@@ -11,11 +11,11 @@
    </div>
 
    <nav class="navbar">
-      <a href="{{ url_for('api.dashboard') }}"><i class="fas fa-home"></i><span>Ana Sayfa</span></a>
-      <a href="{{ url_for('api.about') }}"><i class="fas fa-question"></i><span>Hakkında</span></a>
+      <a href="{{ url_for('auth_bp.dashboard') }}"><i class="fas fa-home"></i><span>Ana Sayfa</span></a>
+      <a href="{{ url_for('main_bp.about') }}"><i class="fas fa-question"></i><span>Hakkında</span></a>
       <a href="documents.html"><i class="fas fa-book"></i><span>Belgeler</span></a>
       <a href="students.html"><i class="fas fa-user-graduate"></i><span>Öğrenciler</span></a>
-      <a href="{{ url_for('api.contact') }}"><i class="fas fa-headset"></i><span>İletişim</span></a>
-      <a href="{{ url_for('api.logout') }}"><i class="fas fa-sign-out-alt"></i><span>Çıkış Yap</span></a>
+      <a href="{{ url_for('main_bp.contact') }}"><i class="fas fa-headset"></i><span>İletişim</span></a>
+      <a href="{{ url_for('auth_bp.logout') }}"><i class="fas fa-sign-out-alt"></i><span>Çıkış Yap</span></a>
    </nav>
 </div>

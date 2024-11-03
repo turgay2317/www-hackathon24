@@ -181,7 +181,7 @@
     <h1>Görüntü Dosyası Yükle</h1>
     <p>Yüklemek istediğiniz dosyayı seçin ve "Yükle" butonuna tıklayın.</p>
 
-    <form action="{{ url_for('api.run') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+    <form action="{{ url_for('post_bp.run') }}" method="post" enctype="multipart/form-data" id="uploadForm">
         <div class="file-input-wrapper">
             <label for="file">Dosya Seç</label>
             <input type="file" name="images" id="images" accept="image/*" multiple required>

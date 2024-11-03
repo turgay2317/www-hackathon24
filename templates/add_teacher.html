@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-5">
         <h2>Yeni Öğretmen Ekle</h2>
-        <form action="{{ url_for('api.add_teacher') }}" method="POST">
+        <form action="{{ url_for('post_bp.add_teacher') }}" method="POST">
             <div class="form-group">
                 <label for="username">Kullanıcı Adı:</label>
                 <input type="text" class="form-control" id="username" name="username" required>

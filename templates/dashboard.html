@@ -21,11 +21,11 @@
 <div class="button-container">
    <div class="button-with-logo">
       <img src="static/images/dashboardLogo.png" alt="Logo" class="button-logo logo-sinav-yukle">
-      <button class="equal-btn" onclick="window.location.href='{{ url_for('api.upload') }}'">Sınav Yükle</button>
+      <button class="equal-btn" onclick="window.location.href='{{ url_for('auth_bp.upload') }}'">Sınav Yükle</button>
    </div>
    <div class="button-with-logo">
       <img src="static/images/dashboardLogo2.png" alt="Logo" class="button-logo logo-sinav-analizlerim">
-      <button class="equal-btn btn-sinav-analizlerim" onclick="window.location.href='{{ url_for('api.recent') }}'">Sınav Analizlerim</button>
+      <button class="equal-btn btn-sinav-analizlerim" onclick="window.location.href='{{ url_for('auth_bp.recent') }}'">Sınav Analizlerim</button>
    </div>
 </div>
 

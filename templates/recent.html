@@ -152,7 +152,7 @@
                         <td>{{ sinav.ders.ad }}</td>
                         <td>{{ sinav.tarih.strftime('%Y-%m-%d') }}</td>
                         <td>
-                            <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=1) }}" class="inline-btn">
+                            <a href="{{ url_for('exam_bp.sinav', sinav_id=sinav.sinavID, soru_no=1) }}" class="inline-btn">
                                 <i class="fas fa-chart-line"></i> Analiz Detayı
                             </a>
                         </td>

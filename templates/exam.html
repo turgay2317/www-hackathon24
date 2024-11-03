@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/style.css"/>
     <title>Sınav Soruları - Write Wise</title>
     <style>
@@ -157,7 +157,7 @@
         </div>
         <div class="mt-4">
             {% if soru.soru_no > 1 %}
-                <a href="{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no - 1) }}" class="btn btn-custom me-2">Geri</a>
+                <a href="{{ url_for('exam_bp.sinav', sinav_id=sinav.sinavID, soru_no=soru.soru_no - 1) }}" class="btn btn-custom me-2">Geri</a>
             {% endif %}
             {% if soru.soru_no < sinav.sorular|length %}
                 <button id="next-btn" class="btn btn-custom">İleri</button>
@@ -171,7 +171,7 @@
 
     <script>
         let sonrakiSoruNo = {{ sonrakiSoruID }};
-        let url = "{{ url_for('api.sinav', sinav_id=sinav.sinavID, soru_no=sonrakiSoruID) }}";
+        let url = "{{ url_for('exam_bp.sinav', sinav_id=sinav.sinavID, soru_no=sonrakiSoruID) }}";
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.btn-increase').forEach(button => {
                 button.addEventListener('click', function () {
@@ -213,7 +213,7 @@
                         });
                     });
 
-                    fetch("{{ url_for('api.kaydet_puanlar') }}", {
+                    fetch("{{ url_for('post_bp.kaydet_puanlar') }}", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ puanlar: data, pozitif: pozitifAnalizler, negatif: negatifAnalizler })
