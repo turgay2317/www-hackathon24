@@ -73,14 +73,14 @@ def run():
             return "Hata: JSON verisi boş.", 400
         try:
             response = add_data(json.loads(json_data))
-
+            print(response)
             if isinstance(response, tuple):
                 status_code = response[1]
                 if status_code != 201:
                     return jsonify({"error": "Hata oluştu"}), status_code
 
-                response_data = response[0].get_json()  # JSON yanıtını al
-                sinavID = response_data.get("sinavID")  # sinavID'yi al
+                response_data = response[0].get_json()
+                sinavID = response_data.get("sinavID")
 
                 return redirect(url_for('exam_bp.sinav', sinav_id=sinavID, soru_no=1))
 
